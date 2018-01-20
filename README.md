@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [![npm version](https://badge.fury.io/js/microsoft-speech-browser-sdk.svg)](https://www.npmjs.com/package/microsoft-speech-browser-sdk)
 
 ## Prerequisites
@@ -168,3 +169,6 @@ The SDK depends on WebRTC APIs to get access to the microphone and read the audi
 
 ## Contributing
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+=======
+stunning-octo-journey
+>>>>>>> d8a00f281e54b182278da24ba783e69db79c8574
