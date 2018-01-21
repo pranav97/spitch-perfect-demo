@@ -3,6 +3,7 @@
 <head>
     <title>Speech Sample</title>
     <meta charset="utf-8" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 </head>
 <body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px;">
     <div id="warning">
@@ -15,9 +16,10 @@
                 <td></td>
                 <td>
                     <h1 style="font-weight:500;">Spitch Perfect</h1>
-                    <h2 style="font-weight:500;">Spitch Perfect helps you excel your next big presentation.</h2>
+                    <h2 style="font-weight:500;">Spitch Perfect helps you excel your next crucial presentation.</h2>
                 </td>
             </tr>
+
        <!--      <tr>
                 <td align="right"><a href="https://www.microsoft.com/cognitive-services/en-us/sign-up" target="_blank">Subscription</a>:</td>
                 <td><input id="key" type="text" size="40" value="YOUR_BING_SPEECH_API_KEY"></td>
@@ -60,7 +62,7 @@
                 </td>
             </tr> -->
             <tr>
-                <td align="right">Input:</td>
+                <td align="right">Select speech source:</td>
                 <td align="left">
                     <select id="inputSource">
                         <option value="Mic" selected="selected">Microphone</option>
@@ -72,7 +74,7 @@
                 <td></td>
                 <td>
                     <button id="startBtn" disabled="disabled">Start</button>
-                    <button id="stopBtn" disabled="disabled">Stop</button>
+                    <button id="stopBtn" disabled="disabled" onclick="thing()">Stop</button>
                     <input type="file" id="filePicker" accept=".wav" style="display:none"/>
                 </td>
             </tr>
@@ -81,8 +83,8 @@
                 <td>
                     <table>
                         <tr>
-                            <td>Results:</td>
-                            <td>Current hypothesis:</td>
+                            <td>Transcript:</td>
+                            <td>I heard... </td>
                         </tr>
                         <tr>
                             <td>
@@ -118,20 +120,6 @@
         
         // Setup the recognizer
         function RecognizerSetup(SDK, subscriptionKey) {
-            
-            // switch (recognitionMode) {
-            //     case "Interactive" :
-            //         recognitionMode = SDK.RecognitionMode.Interactive;    
-            //         break;
-            //     case "Conversation" :
-            //         recognitionMode = SDK.RecognitionMode.Conversation;    
-            //         break;
-            //     case "Dictation" :
-            //         recognitionMode = SDK.RecognitionMode.Dictation;    
-            //         break;
-            //     default:
-            //         recognitionMode = SDK.RecognitionMode.Interactive;
-            // }
 
             var recognizerConfig = new SDK.RecognizerConfig(
                 new SDK.SpeechConfig(
@@ -361,5 +349,68 @@
             stopBtn.disabled = true;
         }
     </script>
+
+    <h3> Grammar Analysis </h3>
+    <table>
+        <tbody id="grammar">
+
+        </tbody>
+
+    </table>
+
+    <!-- generate grammar analysis report -->
+    <script>
+            thing = function () {
+            var text = $('#phraseDiv').val();
+            var params = {
+                // Request parameters
+                "text" : text,
+                "key" : "7MK3C9qTf27auAxd" 
+            };
+
+          // microsoft linguistics
+                // $.ajax({
+          //           url: "https://api.textgears.com/check.php?" + $.param(params),
+          //           beforeSend: function(xhrObj){
+          //               // Request headers
+          //               xhrObj.setRequestHeader("Content-Type","application/json");
+          //               xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","19f12ba09937430994e22414e9753b15");
+          //           },
+          //           type: "GET",
+          //       })
+          //       .success(function(data) {
+          //           alert("success");
+                //  console.log(data);
+          //       })
+          //       .fail(function() {
+          //           alert("error");
+          //       });
+
+           // Textgears grammar analysis
+            $.getJSON('https://api.textgears.com/check.php?' + $.param(params), function(data) {
+                // console.log(data);
+                // grab word at error[i].offset
+                var errlist = data.errors;
+                for (var i = 0; i < errlist.length; ++i) {
+                    // creates tr elements and assign unique ids
+                    var tr = document.createElement('tr');
+                    var uid = "err" + i;
+                    tr.setAttribute("id", uid);
+                    tr.innerText = "Grammar: " + text.substr(errlist[i].offset, errlist[i].length);
+                    document.getElementById("grammar").appendChild(tr);
+
+                    var tr2 = document.createElement('tr');
+                    var uid2 = "sug" + i;
+                    tr2.setAttribute("id", uid2);
+                    tr2.innerText = " Suggestion: " + errlist[i].better;
+                    document.getElementById("grammar").appendChild(tr2);
+                } 
+            });
+
+            // content analysis
+
+          }
+    </script>
+
 </body>
 </html>
