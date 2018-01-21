@@ -88,27 +88,25 @@
                     <input type="file" id="filePicker" accept=".wav" style="display:none"/>
                 </td>
             </tr>
+                 <hr>
             <tr>
                 <td></td>
                 <td>
                     <table>
-                        <tr>
-                            <td>Transcript:</td>
+                        <tr style="text-align: center">
+                            <td>Transcript</td>
                             <td>I heard... </td>
                         </tr>
-
-                        <hr>
 
                         <tr>
                             <td>
                                 <textarea rows="20" cols="80" style="background: #FFFFFF" style="font-family: Arial, Helvetica, sans-serif" style="color:#000000" style="border style:solid" id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea>
                             </td>
-                        </tr>
-                        <tr>
-                            <td style="vertical-align: top">
+                            <td style="vertical-align: top; padding:3%">
                                 <p id="hypothesisDiv" style="width:auto;height:auto;display:block; text-align: center"></p>
                             </td>
                         </tr>
+               
                     </table>
                 </td>
             </tr>
@@ -117,6 +115,8 @@
                 <td align="left"><span id="statusDiv"></span></td>
             </tr>
         </table>
+
+        <div id="ga"></div>
     </div>
 
     <!-- SDK REFERENCE -->
@@ -356,7 +356,7 @@
 
         function UpdateRecognizedPhrase(json) {
             hypothesisDiv.innerHTML = "";
-            phraseDiv.innerHTML += json + "\n";
+            if (json != undefined) phraseDiv.innerHTML += json + "\n";
         }
 
         function OnComplete() {
@@ -365,7 +365,6 @@
         }
     </script>
 
-    <h3> Grammar Analysis </h3>
     <table style="text-align: center; font-size: 20px;" id="grammar"></table>
 
     <!-- generate grammar analysis report -->
@@ -396,25 +395,32 @@
           //           alert("error");
           //       });
 
+          var title = document.createElement('h3');
+          title.innerText = "Grammar Analysis";
+          document.getElementById("ga").appendChild(title);
+
            // Textgears grammar analysis
             $.getJSON('https://api.textgears.com/check.php?' + $.param(params), function(data) {
                 // console.log(data);
                 // grab word at error[i].offset
-                var errlist = data.errors;
-                for (var i = 0; i < errlist.length; ++i) {
-                    // creates tr elements and assign unique ids
-                    var tr = document.createElement('tr');
-                    var uid = "err" + i;
-                    tr.setAttribute("id", uid);
-                    tr.innerText = "Grammar: " + text.substr(errlist[i].offset, errlist[i].length);
-                    document.getElementById("grammar").appendChild(tr);
+                if (data.errors != undefined) {
+                    var errlist = data.errors;
+                    for (var i = 0; i < errlist.length; ++i) {
+                        // creates tr elements and assign unique ids
+                        var tr = document.createElement('tr');
+                        var uid = "err" + i;
+                        tr.setAttribute("id", uid);
+                        tr.innerText = "Grammar: " + text.substr(errlist[i].offset, errlist[i].length);
+                        document.getElementById("grammar").appendChild(tr);
 
-                    var tr2 = document.createElement('tr');
-                    var uid2 = "sug" + i;
-                    tr2.setAttribute("id", uid2);
-                    tr2.innerText = " Suggestion: " + errlist[i].better;
-                    document.getElementById("grammar").appendChild(tr2);
-                } 
+                        var tr2 = document.createElement('tr');
+                        var uid2 = "sug" + i;
+                        tr2.setAttribute("id", uid2);
+                        tr2.innerText = " Suggestion: " + errlist[i].better;
+                        document.getElementById("grammar").appendChild(tr2);
+                    } 
+                }
+               
             });
 
             // content analysis
