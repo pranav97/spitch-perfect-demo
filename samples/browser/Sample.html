@@ -11,7 +11,10 @@
     <link href="../../css/bootstrap.min.css" rel="stylesheet">
 
     <link href="../../css/test.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+   <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
 </head>
 
 <body style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:13px; padding: 5%;">
@@ -74,7 +77,7 @@
             </tr> -->
             <td align="right">Select speech source:</td>
             <td align="left">
-                <select id="inputSource">
+                <select  id="inputSource">
                     <option value="Mic" selected="selected">Microphone</option>
                     <option value="File">Audio File</option>
                 </select>
@@ -83,8 +86,8 @@
             <tr>
                 <td></td>
                 <td>
-                    <button id="startBtn" disabled="disabled">Start</button>
-                    <button id="stopBtn" disabled="disabled" onclick="thing()">Stop</button>
+                    <button class="btn btn-outline-success" id="startBtn" disabled="disabled">Start</button>
+                    <button class="btn btn-outline-danger" id="stopBtn" disabled="disabled" onclick="thing()">Stop</button>
                     <input type="file" id="filePicker" accept=".wav" style="display:none"/>
                 </td>
             </tr>
@@ -100,7 +103,7 @@
 
                         <tr>
                             <td>
-                                <textarea rows="20" cols="80" style="background: #FFFFFF" style="font-family: Arial, Helvetica, sans-serif" style="color:#000000" style="border style:solid" id="phraseDiv" style="display: inline-block;width:500px;height:200px"></textarea>
+                                <textarea rows="20" cols="80" style="background: #FFFFFF" style="font-family: Arial, Helvetica, sans-serif" style="color:#000000" style="border style:solid" id="phraseDiv" style="display: inline-block;width:500px;height:200px" display="none"></textarea>
                             </td>
                             <td style="vertical-align: top; padding:3%">
                                 <p id="hypothesisDiv" style="width:auto;height:auto;display:block; text-align: center"></p>
@@ -116,7 +119,12 @@
             </tr>
         </table>
 
-        <div id="ga"></div>
+    </div> <!--end of content div-->
+    <hr>
+
+    <div id="analysis">
+        <div style="margin: 0 auto; width=100%" id="ga"></div>
+        <table style="text-align: center; margin: 0 auto; width=100%; font-size: 20px;" id="grammar"></table>
     </div>
 
     <!-- SDK REFERENCE -->
@@ -365,11 +373,10 @@
         }
     </script>
 
-    <table style="text-align: center; font-size: 20px;" id="grammar"></table>
-
     <!-- generate grammar analysis report -->
     <script>
             thing = function () {
+       
             var text = $('#phraseDiv').val();
             var params = {
                 // Request parameters
@@ -394,10 +401,12 @@
           //       .fail(function() {
           //           alert("error");
           //       });
-
-          var title = document.createElement('h3');
-          title.innerText = "Grammar Analysis";
-          document.getElementById("ga").appendChild(title);
+          if (document.getElementById("ga").innerHTML == "") {
+                // show title
+             var title = document.createElement('h3');
+             title.innerText = "Grammar Analysis";
+             document.getElementById("ga").appendChild(title);
+          }
 
            // Textgears grammar analysis
             $.getJSON('https://api.textgears.com/check.php?' + $.param(params), function(data) {
@@ -405,6 +414,7 @@
                 // grab word at error[i].offset
                 if (data.errors != undefined) {
                     var errlist = data.errors;
+                    console.log(errlist);
                     for (var i = 0; i < errlist.length; ++i) {
                         // creates tr elements and assign unique ids
                         var tr = document.createElement('tr');
@@ -427,6 +437,6 @@
 
           }
     </script>
-
+    <script src="../../js/bootstrap.min.js"></script>
 </body>
 </html>
